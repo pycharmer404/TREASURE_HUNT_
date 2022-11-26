@@ -2,19 +2,20 @@ from random import randint
 
 while True:
  def initialize():
-    print("You will asked to enter number of moves in which you woul like to find the treasure")
+    print()
+    print("You will be asked to enter number of moves in which you would like to find the treasure")
     print()
     print("Please enter valid moves between 4 and 14")
     print()
     print("You will need to find treasure between those moves")
     print()
     print("All the best")
-    global dessert, tr, tc, found, moves
+    global dessert, tr, tc, found, moves, notfound
     dessert = [[(".") for col in range(30)]for row in range (10)]
     tr = randint(0,9)
     tc = randint(0,29)
-    found = False
     moves = 0
+    notfound = True
     
  def printgrid():
     print("Treasure is burried under one of these:")
@@ -23,8 +24,8 @@ while True:
         for col in range(30):
             print(dessert[row][col], end=" ")
     
- def dighole():
-    global dessert, tr, tc, found, moves
+ def move():
+    global dessert, tr, tc, moves, notfound
     print()
 
     while True:
@@ -33,28 +34,40 @@ while True:
           break
         else:
           print("invalid")
-     
-    for i in range (moves):
-      dr = int(input("Enter row to dig= "))-1
-      dc = int(input("Enter col to dig= "))-1
-      if 0 <= dr <= 9 and 0 <= dc <= 29:
-          if dr==tr and dc==tc:
-              dessert[dr][dc] = "X"
-              printgrid()
-              print()
-              print("You found the treasure")
-          else:
+
+ def dighole():
+    global dessert, tr, tc, moves, notfound
+    turn = 1
+    while notfound == True and turn <= moves:
+          dr = int(input("Enter row to dig= "))-1
+          dc = int(input("Enter col to dig= "))-1
+          if 0 <= dr <= 9 and 0 <= dc <= 29:
+           if dr==tr and dc==tc:
+              won(dr,dc)          
+           else:
               dessert[dr][dc] = "O"
               printgrid()
               print()
-              treasure(dr,dc)
-      else:
+              hints(dr,dc)
+          else:
               print("invalid")
-    print("Out of moves")
-    print("The correct row and col is: ", tr+1, tc+1)
+          turn += 1
+              
+    if notfound == True:
+        print("Out of moves")
+        print("The correct row and col is: ", tr+1, tc+1)
 
+
+ def won(dr,dc):
+     global dessert, tr, tc, moves, notfound
+     dessert[dr][dc] = "$"
+     printgrid()
+     print()
+     print("You found the treasure :: Congractulations")
+     notfound = False
+     dighole()
     
- def treasure(dr,dc):
+ def hints(dr,dc):
     global dessert, tr, tc, found
 
     if dr == tr:
@@ -70,12 +83,21 @@ while True:
         print("dig right")
     elif dc > tc:
         print("dig left")
-    
+
+
+
+     
  ask = input("Play this game:(y/n) ")
  if ask == "y" :
-    initialize()
-    printgrid()
-    dighole()
+       initialize()
+       printgrid()
+       move()
+       dighole()
  else:
-    break
-    
+       print("BYE BYE")
+       break
+
+ 
+
+
+
